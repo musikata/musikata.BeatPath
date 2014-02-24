@@ -1,0 +1,23 @@
+{
+  "name": "musikata.BeatPath",
+  "version": "0.0.0",
+  "description": "BeatPath ========",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/musikata/musikata.BeatPath.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/musikata/musikata.BeatPath/issues"
+  },
+  "homepage": "https://github.com/musikata/musikata.BeatPath",
+  "devDependencies": {
+    "bower": "~1.2.8",
+    "bower-requirejs": "~0.10.0"
+  }
+}
