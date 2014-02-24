@@ -18,6 +18,8 @@
   "homepage": "https://github.com/musikata/musikata.BeatPath",
   "devDependencies": {
     "bower": "~1.2.8",
-    "bower-requirejs": "~0.10.0"
+    "bower-requirejs": "~0.10.0",
+    "gulp": "~3.5.2",
+    "rimraf": "~2.2.6"
   }
 }
