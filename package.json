@@ -20,6 +20,11 @@
     "bower": "~1.2.8",
     "bower-requirejs": "~0.10.0",
     "gulp": "~3.5.2",
-    "rimraf": "~2.2.6"
+    "rimraf": "~2.2.6",
+    "protractor": "~0.18.1",
+    "gulp-protractor": "0.0.6",
+    "gulp-jasmine": "~0.1.4",
+    "selenium-webdriver": "~2.40.0",
+    "connect": "~2.13.0"
   }
 }
