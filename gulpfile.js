@@ -25,6 +25,7 @@
  */
 
 var path = require('path');
+var spawn = require('child_process').spawn;
 
 var gulp = require('gulp');
 var rimraf = require('rimraf');
@@ -70,21 +71,26 @@ gulp.task('watch', function() {
 // ghostdriver is preferred because it's faster.
 // For now can start it manuall in another process.
 gulp.task('test:e2e', function(){
+  // Setup server.
   var app = connect().use(connect.static(staticDir));
   var server = http.createServer(app);
   var port = 8000;
-  server.listen(8000);
+  server.listen(8000)
   var baseUrl = 'http://127.0.0.1:' + port;
+
+  // Setup phantom as webdriver.
+  var phantomProc = spawn('phantomjs', ['--webdriver', '4444']);
+
+  var cleanup = function(){
+    server.close();
+    phantomProc.kill();
+  };
 
   gulp.src(['./test/e2e/specs/*.spec.js'])
   .pipe(gulpProtractor.protractor({
     configFile: './test/e2e/protractor.conf.js',
     args: ['--baseUrl', baseUrl]
   }))
-  .on('error', function(e){
-    server.close()
-  })
-  .on('end', function(){
-    server.close()
-  });
+  .on('error', cleanup)
+  .on('end', cleanup);
 });
