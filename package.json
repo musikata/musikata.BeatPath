@@ -25,6 +25,8 @@
     "gulp-protractor": "0.0.6",
     "gulp-jasmine": "~0.1.4",
     "selenium-webdriver": "~2.40.0",
-    "connect": "~2.13.0"
+    "connect": "~2.13.0",
+    "requirejs": "~2.1.11",
+    "lodash": "~2.4.1"
   }
 }

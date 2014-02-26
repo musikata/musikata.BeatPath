@@ -14,9 +14,22 @@
     The Body.
 </div>
 
-<!-- Eventually inline this -->
-<script src="index.js"></script>
+<script>
 
+var appConfig = {};
+
+var mainScript = 'app.js';
+
+// The async script injection fanfare
+var script = document.createElement('script');
+var fScript = document.getElementsByTagName('script')[0];
+
+// Set the URL on the script
+script.src = 'js/' + mainScript;
+
+// Inject the script
+fScript.parentNode.insertBefore(script, fScript);
+</script>
 
 <!-- ADD ANALYTICS -->
 

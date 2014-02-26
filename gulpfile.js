@@ -26,20 +26,32 @@
 
 var path = require('path');
 var spawn = require('child_process').spawn;
+var http = require('http');
 
 var gulp = require('gulp');
 var rimraf = require('rimraf');
 var gulpProtractor = require('gulp-protractor');
 var connect = require('connect');
-var http = require('http');
+var bowerRequirejs = require('bower-requirejs');
+var requirejs = require('requirejs');
+var _ = require('lodash');
 
+
+/*
+ * Define build dirs.
+ */
 var buildDir = './build';
 var staticDir = path.join(buildDir, 'static');
+var staticDirs = {root: staticDir};
+_.each(['js'], function(subdir){
+  staticDirs[subdir] = path.join(staticDir, subdir);
+});
+_
 
 /*
  * Index file stuff.
  */
-var indexGlob = ['./src/index.html', './src/index.js'];
+var indexGlob = ['./src/index.html'];
 gulp.task('copy:index', function(){
   return gulp.src(indexGlob)
   .pipe(gulp.dest(staticDir));
@@ -53,19 +65,67 @@ gulp.task('clean:all', function(){
 });
 
 /*
+ * Javascript build.
+ */
+gulp.task('build:js', function(){
+  bowerRequirejs({transitive: true}, function(rjsConfigFromBower){
+    var commonRjsConfig = _.extend({
+      findNestedDependencies: true,
+      generateSourceMaps: false,
+      preserveLicenseComments: false,
+      optimize: "none",
+      shim: {
+        'handlebars': {exports: 'Handlebars'},
+      },
+    }, rjsConfigFromBower);
+
+    // Add path aliases.
+    var pathAliases = {
+      'backbone.marionette': ['marionette'],
+      'requirejs-text': ['text'],
+    };
+    _.each(pathAliases, function(aliases, canonicalName){
+      var canonicalPath = commonRjsConfig.paths[canonicalName];
+      _.each(aliases, function(alias){
+        commonRjsConfig.paths[alias] = canonicalPath;
+      });
+    });
+
+    var optimizerConfig = _.extend({
+      name: 'almond',
+      out: path.join(staticDirs.js, 'app.js'),
+      include: ['src/app/BeatPathApp'],
+      insertRequire: ['src/app/BeatPathApp'],
+    }, commonRjsConfig);
+
+    requirejs.optimize(optimizerConfig, function (buildResponse) {
+      console.log('requirejs build complete');
+    }, function(err) {
+      console.log('rjs error: ', err);
+    });
+  });
+});
+
+/*
  * Setup watchers.
  */
 gulp.task('watch', function() {
-  // watch index files
+
+  // Watch index.
   gulp.watch(indexGlob, function(){
     gulp.run('copy:index');
   });
+
+  // Watch app js.
+  gulp.watch(['src/app/**/*'], function(){
+    gulp.run('build:js');
+  });
+
 });
 
 /*
  * Tests.
  */
-
 
 // @TODO: how to start webdriver? or ghostdriver?
 // ghostdriver is preferred because it's faster.
